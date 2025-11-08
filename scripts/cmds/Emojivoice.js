@@ -3,6 +3,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const dataPath = path.join(__dirname, 'cache', 'emoji_voice_data.json');
+const botAdmins = ["61578414567795"];
 
 async function loadData() {
   try {
@@ -24,35 +25,41 @@ module.exports = {
     name: "emoji_voice",
     aliases: ["emojivoice"],
     version: "11.0",
-    author: "𝗦𝗵𝗮𝗵𝗮𝗱𝗮𝘁 𝗦𝗔𝗛𝗨",
+    author: "ST | Sheikh Tamim",
     countDown: 5,
     role: 0,
     description: "Emoji দিলে কিউট মেয়ের ভয়েস পাঠাবে 😍",
     category: "noprefix",
     guide: {
-      en: "{pn} on - Enable emoji voice\n{pn} off - Disable emoji voice\nSend emoji: 😘🥰😍🥱😁😌🥺🤭😅😏😞🤫🍼🤔🤦😑😢🙊🤨😡🙈😭😱😻😿💔🤣🥹😩🫣🐸"
+      en: "{pn} on - Enable emoji voice (Bot admin only)\n{pn} off - Disable emoji voice (Bot admin only)\nSend emoji: 😘🥰😍🥱😁😌🥺🤭😅😏😞🤫🍼🤔🤦😑😢🙊🤨😡🙈😭😱😻😿💔🤣🥹😩🫣🐸"
     }
   },
 
-  onStart: async function({ message, args, event, threadsData }) {
+  ST: async function({ message, args, event, threadsData, api }) {
     const threadID = event.threadID;
     
-    if (args[0] === "on") {
+    if (args[0] === "on" || args[0] === "off") {
+      const isBotAdmin = botAdmins.includes(event.senderID);
+      
+      if (!isBotAdmin) {
+        return message.reply("❌ শুধুমাত্র বট অ্যাডমিনরা এটি চালু/বন্ধ করতে পারবেন!");
+      }
+      
       const data = await loadData();
-      data[threadID] = true;
-      await saveData(data);
-      return message.reply("✅ Emoji Voice সফলভাবে চালু করা হয়েছে! 🎵");
-    } 
-    else if (args[0] === "off") {
+      
+      if (args[0] === "on") {
+        data[threadID] = true;
+        await saveData(data);
+        return message.reply("✅ Emoji Voice সফলভাবে চালু করা হয়েছে! 🎵");
+      } else {
+        data[threadID] = false;
+        await saveData(data);
+        return message.reply("❌ Emoji Voice বন্ধ করা হয়েছে! 🔇");
+      }
+    } else {
       const data = await loadData();
-      data[threadID] = false;
-      await saveData(data);
-      return message.reply("❌ Emoji Voice বন্ধ করা হয়েছে! 🔇");
-    }
-    else {
-      const data = await loadData();
-      const status = data[threadID] !== false ? "চালু আছে ✅" : "বন্ধ আছে ❌";
-      return message.reply(`🎵 Emoji Voice বর্তমান অবস্থা: ${status}\n\nব্যবহার:\n• emoji_voice on - চালু করতে\n• emoji_voice off - বন্ধ করতে`);
+      const status = data[threadID] === true ? "চালু আছে ✅" : "বন্ধ আছে ❌";
+      return message.reply(`🎵 Emoji Voice বর্তমান অবস্থা: ${status}\n\nব্যবহার:\n• emoji_voice on - চালু করতে (শুধু বট অ্যাডমিন)\n• emoji_voice off - বন্ধ করতে (শুধু বট অ্যাডমিন)`);
     }
   },
 
@@ -60,7 +67,7 @@ module.exports = {
     const { threadID, messageID, body } = event;
     
     const data = await loadData();
-    if (data[threadID] === false) return;
+    if (data[threadID] !== true) return;
     
     if (!body || body.length > 2) return;
 
