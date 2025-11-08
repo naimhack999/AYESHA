@@ -30,19 +30,34 @@
     "enable": false,
     "ignoreCommand": []
   },
+  "developerOnly": {
+    "enable": false,
+    "ignoreCommand": []
+  },
+  "vipOnly": {
+    "enable": false,
+    "ignoreCommand": []
+  },
   "adminBot": [
     "61578414567795",
-    "",
+    ""
+  ],
+  "developer": [
+    "61578414567795",
+    ""
+  ],
+  "vipuser": [
+    "61578414567795",
     ""
   ],
   "whiteListMode": {
     "enable": true,
-    "whiteListIds": [],
+    "whiteListIds": ["61578414567795"],
     "notes": "if you enable this feature, only the ids in the whiteListIds list can use the bot"
   },
   "whiteListModeThread": {
     "enable": false,
-    "whiteListThreadIds": [],
+    "whiteListThreadIds": ["24358542810428588"],
     "notes": "if you enable this feature, only the thread in the whiteListThreadIds list can use the bot",
     "how_it_work": "if you enable both whiteListMode and whiteListModeThread, the system will check if the user is in whiteListIds, then check if the thread is in whiteListThreadIds, if one of the conditions is true, the user can use the bot"
   },
@@ -85,7 +100,7 @@
     "notes": "the value of timeInterval is seconds, url is the url you want to send the request to (automatically detected for hosting glitch or replit)"
   },
   "autoLoadScripts": {
-    "enable": false,
+    "enable": true,
     "ignoreCmds": "",
     "ignoreEvents": "",
     "notes": "this feature will automatically load the script when scripts have been changed, you can set ignoreCmds to ignore commands, ignoreEvents to ignore events, separate by comma or space, example: \"cmd1.js cmd2.js cmd3.js\" (without backslash)"
@@ -120,14 +135,14 @@
     }
   },
   "botStartupNotification": {
-    "enable": false,
+    "enable": true,
     "sendToThreads": {
       "enable": true,
       "threadIds": ["24358542810428588"]
     },
     "sendToAdmin": {
-      "enable": false,
-      "adminId": ""
+      "enable": true,
+      "adminId": "61578414567795"
     },
     "message": "🤖 Bot is now online and ready to serve!",
     "notes": "Bot startup notification settings. sendToThreads.threadIds can contain multiple thread IDs, sendToAdmin.adminId should contain single admin ID for notifications.Duo to fca issue maybe sendtoadmin not work."
@@ -156,12 +171,12 @@
     "reactByUnsend": {
       "enable": true,
       "emojis": [
-        "🔪"
+        "🔪","🐸","🤡","🙂"
       ]
     },
     "reactByRemove": {
       "enable": true,
-      "emoji": "☠️"
+      "emoji": "☠️","💀","⚠️","🦵"
     },
     "onlyAdminBot": true,
     "notes": "If enabled, bot will unsend BOT MESSAGES when admins react with unsend emojis, and remove users when admins react with remove emoji. Only works for bot admins."
