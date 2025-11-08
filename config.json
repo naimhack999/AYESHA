@@ -35,7 +35,7 @@
     "ignoreCommand": []
   },
   "vipOnly": {
-    "enable": true,
+    "enable": false,
     "ignoreCommand": []
   },
   "adminBot": [
@@ -176,9 +176,7 @@
     },
     "reactByRemove": {
       "enable": true,
-      "emojis": [
-      "☠️","💀","🦶","🦵"
-      ]
+      "emoji": "☠️"
     },
     "onlyAdminBot": true,
     "notes": "If enabled, bot will unsend BOT MESSAGES when admins react with unsend emojis, and remove users when admins react with remove emoji. Only works for bot admins."
