@@ -36,7 +36,7 @@ module.exports = {
 			confirmThisThread: "Vui lòng thả cảm xúc bất kỳ vào tin nhắn này để xác nhận thay đổi prefix trong nhóm chat của bạn",
 			successGlobal: "Đã thay đổi prefix hệ thống bot thành: %1",
 			successThisThread: "Đã thay đổi prefix trong nhóm chat của bạn thành: %1",
-			myPrefix: "🌎 𝐆𝐥𝐨𝐛𝐚𝐥 𝐩𝐫𝐞𝐟𝐢𝐱: %1\n📚 𝐘𝐨𝐮𝐫 𝐠𝐫𝐨𝐮𝐩 𝐩𝐫𝐞𝐟𝐢𝐱: %2\n📈 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞: " + global.GoatBot.config.nickNameBot
+			myPrefix: "🌎 𝐆𝐥𝐨𝐛𝐚𝐥 𝐩𝐫𝐞𝐟𝐢𝐱: %1\n📚 𝐘𝐨𝐮𝐫 𝐠𝐫𝐨𝐮𝐩 𝐩𝐫𝐞𝐟𝐢𝐱: %2\n📈 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞: " + (global.GoatBot?.config?.nickNameBot || "Bot")
 		},
 		en: {
 			reset: "Your prefix has been reset to default: %1",
@@ -45,7 +45,7 @@ module.exports = {
 			confirmThisThread: "Please react to this message to confirm change prefix in your box chat",
 			successGlobal: "Changed prefix of system bot to: %1",
 			successThisThread: "Changed prefix in your box chat to: %1",
-			myPrefix: "🌎 𝐆𝐥𝐨𝐛𝐚𝐥 𝐩𝐫𝐞𝐟𝐢𝐱: %1\n📚 𝐘𝐨𝐮𝐫 𝐠𝐫𝐨𝐮𝐩 𝐩𝐫𝐞𝐟𝐢𝐱: %2\n📈 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞: " + global.GoatBot.config.nickNameBot
+			myPrefix: "🌎 𝐆𝐥𝐨𝐛𝐚𝐥 𝐩𝐫𝐞𝐟𝐢𝐱: %1\n📚 𝐘𝐨𝐮𝐫 𝐠𝐫𝐨𝐮𝐩 𝐩𝐫𝐞𝐟𝐢𝐱: %2\n📈 𝐁𝐨𝐭 𝐍𝐚𝐦𝐞: " + (global.GoatBot?.config?.nickNameBot || "Bot")
 		}
 	},
 
@@ -65,13 +65,14 @@ module.exports = {
 			newPrefix
 		};
 
-		if (args[1] === "-g")
+		if (args[1] === "-g") {
 			if (role < 2)
 				return message.reply(getLang("onlyAdmin"));
 			else
 				formSet.setGlobal = true;
-		else
+		} else {
 			formSet.setGlobal = false;
+		}
 
 		return message.reply(args[1] === "-g" ? getLang("confirmGlobal") : getLang("confirmThisThread"), (err, info) => {
 			formSet.messageID = info.messageID;
@@ -109,10 +110,16 @@ module.exports = {
 
 			const videoURL = "https://files.catbox.moe/o5vqu1.mp4";
 
-			return message.reply({
-				body: prefixInfo,
-				attachment: await global.utils.getStreamFromURL(videoURL)
-			});
+			try {
+				const stream = await global.utils.getStreamFromURL(videoURL);
+				return message.reply({
+					body: prefixInfo,
+					attachment: stream
+				});
+			} catch (error) {
+				console.error("Prefix video error:", error);
+				return message.reply(prefixInfo);
+			}
 		}
 	}
 };
