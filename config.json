@@ -17,7 +17,7 @@
   "antiInbox": false,
   "language": "en",
   "notesLanguage": "change to your language with ISO 639-1 code, available languages: vi (Vietnamese), en (English)",
-  "nickNameBot": "暗• ≛⃝𝙰𝚈𝙴𝙰𝙷𝙰 𝚀𝚄𝙴𝙴𝙽👑",
+  "nickNameBot": "≛⃝𝙰𝚈𝙴𝙰𝙷𝙰 𝚀𝚄𝙴𝙴𝙽👑",
   "prefix": "?",
   "usePrefix": {
     "enable": true,
@@ -35,7 +35,7 @@
     "ignoreCommand": []
   },
   "vipOnly": {
-    "enable": false,
+    "enable": true,
     "ignoreCommand": []
   },
   "adminBot": [
