@@ -35,7 +35,7 @@
     "ignoreCommand": []
   },
   "vipOnly": {
-    "enable": false,
+    "enable": true,
     "ignoreCommand": []
   },
   "adminBot": [
