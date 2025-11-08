@@ -176,7 +176,9 @@
     },
     "reactByRemove": {
       "enable": true,
-      "emojis": "☠️","💀","⚠️","🦵"
+      "emojis": [
+      "☠️","💀","🦶","🦵"
+      ]
     },
     "onlyAdminBot": true,
     "notes": "If enabled, bot will unsend BOT MESSAGES when admins react with unsend emojis, and remove users when admins react with remove emoji. Only works for bot admins."
