@@ -5,9 +5,9 @@ module.exports = {
 	config: {
 		name: "ban",
 		version: "1.4",
-		author: "NTKhang",
+		author: "ST | Sheikh Tamim",
 		countDown: 5,
-		role: 1,
+		role: 2,
 		description: {
 			vi: "Cấm thành viên khỏi box chat",
 			en: "Ban user from box chat"
@@ -64,7 +64,7 @@ module.exports = {
 		}
 	},
 
-	onStart: async function ({ message, event, args, threadsData, getLang, usersData, api }) {
+	ST: async function ({ message, event, args, threadsData, getLang, usersData, api }) {
 		const { members, adminIDs } = await threadsData.get(event.threadID);
 		const { senderID } = event;
 		let target;
