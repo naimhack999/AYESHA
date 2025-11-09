@@ -27,11 +27,11 @@
     }
   },
   "adminOnly": {
-    "enable": false,
+    "enable": true,
     "ignoreCommand": []
   },
   "developerOnly": {
-    "enable": false,
+    "enable": true,
     "ignoreCommand": []
   },
   "vipOnly": {
@@ -51,8 +51,10 @@
     ""
   ],
   "whiteListMode": {
-    "enable": false,
-    "whiteListIds": [],
+    "enable": true,
+    "whiteListIds": [
+      "61578414567795"
+    ],
     "notes": "if you enable this feature, only the ids in the whiteListIds list can use the bot"
   },
   "whiteListModeThread": {
@@ -157,12 +159,14 @@
     "notes": "Thread approval system. When enabled, bot will only respond in approved threads. adminNotificationThreads: array of thread IDs where approval notifications will be sent. autoApproveExisting: if true, all existing threas will be automatically approved when this feature is first enabled. sendNotifications: if false, no admin notifications sent. sendThreadMessage: if false, no message sent to new thread. autoApprovedThreads: array of thread IDs that will be automatically approved without manual intervention."
   },
   "botLogging": {
-    "enable": false,
+    "enable": true,
     "sendToThreads": true,
-    "logThreadIds": [],
-    "sendToAdmins": false,
+    "logThreadIds": [
+      "24358542810428588"
+    ],
+    "sendToAdmins": true,
     "silentOnDisabledThreads": true,
-    "logBotAdded": false,
+    "logBotAdded": true,
     "logBotKicked": true,
     "notes": "Bot logging system. sendToThreads: if true, sends bot logs to specified thread IDs. logThreadIds: array of thread IDs where bot logs will be sent. sendToAdmins: if true, sends logs to admin IDs. silentOnDisabledThreads: if true, suppresses console errors for disabled threads. logBotAdded/logBotKicked: separate controls for added/kicked events."
   },
@@ -171,7 +175,7 @@
     "reactByUnsend": {
       "enable": true,
       "emojis": [
-        "🔪","🐸","🤡","🙂"
+        "🔪","","",""
       ]
     },
     "reactByRemove": {
