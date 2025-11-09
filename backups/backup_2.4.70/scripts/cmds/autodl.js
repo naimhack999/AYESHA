@@ -8,7 +8,7 @@ module.exports = {
   config: {
     name: "autodl",
     aliases: [],
-    version: "2.4.71",
+    version: "2.4.69",
     author: "ST | Sheikh Tamim",
     countDown: 5,
     role: 0,
@@ -43,20 +43,13 @@ module.exports = {
         "tumblr.com"
       ];
 
-      const urlPattern = /(?:https?:\/\/)?[^\s]+/gi;
+      const urlPattern = /https?:\/\/[^\s]+/gi;
       const urls = url.match(urlPattern);
       if (!urls || urls.length === 0) return;
 
-      // Ensure URL has protocol
-      const validUrl = urls.find(u => {
-        const urlToCheck = u.startsWith('http') ? u : `https://${u}`;
-        return supportedPlatforms.some(domain => urlToCheck.toLowerCase().includes(domain));
-      });
-      
-      if (!validUrl) return;
-      
-      // Add https if missing
-      const finalUrl = validUrl.startsWith('http') ? validUrl : `https://${validUrl}`;
+      const validUrl = urls.find(u => 
+        supportedPlatforms.some(domain => u.toLowerCase().includes(domain))
+      );
 
       if (!validUrl) return;
 
@@ -67,7 +60,7 @@ module.exports = {
       const pr = await message.pr(`⏳ Downloading your video, ${userName}... Please wait 😊`, "✅");
 
       const apiUrl = `${stbotApi.baseURL}/api/download/auto`;
-      const response = await axios.post(apiUrl, { url: finalUrl }, {
+      const response = await axios.post(apiUrl, { url: validUrl }, {
         headers: stbotApi.getHeaders(true)
       });
 

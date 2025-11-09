@@ -1,84 +1,87 @@
-const a = require("axios");
-const b = require("fs");
-const c = require("path");
-const d = require("yt-search");
+
+const axios = require("axios");
+const yts = require("yt-search");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
   config: {
     name: "sing",
-    aliases: ["sing", "music"],
-    version: "0.0.2",
-    author: "ArYAN + Modified by Alamin",
+    aliases: [],
+    version: "2.4.71",
+    author: "ST | Sheikh Tamim",
     countDown: 5,
     role: 0,
-    shortDescription: "Search and download music from YouTube",
-    longDescription: "Search and download music from YouTube and play it in chat 🎧",
-    category: "MUSIC",
-    guide: "/music <song name or YouTube URL>"
+    shortDescription: "Search and download YouTube songs",
+    longDescription: "Search and download audio from YouTube",
+    category: "music",
+    guide: {
+      en: "{pn} <song name>"
+    }
   },
 
-  onStart: async function ({ api: e, event: f, args: g }) {
-    if (!g.length)
-      return e.sendMessage("❌ Provide a song name or YouTube URL.", f.threadID, f.messageID);
+  ST: async function ({ message, args, event, usersData }) {
+    const query = args.join(" ");
+    if (!query) return message.reply("🎵 Please enter a song name.");
 
-    const h = g.join(" ");
-    e.setMessageReaction("⏳", f.messageID, () => {}, true);
+    const userName = await usersData.getName(event.senderID);
+    const processingMsg = await message.reply(`⏳ ${userName}, searching and downloading... Please wait.`);
 
-    let searchingMsg;
     try {
-      // ⏳ Step 1: Send searching message
-      searchingMsg = await e.sendMessage(`⌛ Searching the song "${h}"...`, f.threadID);
-
-      let j;
-      if (h.startsWith("http")) {
-        j = h;
-      } else {
-        const k = await d(h);
-        if (!k || !k.videos.length) throw new Error("No results found.");
-        j = k.videos[0].url;
+      const searchResult = await yts(query);
+      if (!searchResult.videos.length) {
+        await message.unsend(processingMsg.messageID);
+        return message.reply("❌ No videos found for your query.");
       }
 
-      // 🎧 Step 2: Fetch audio using API
-      const l = `http://65.109.80.126:20409/aryan/youtube?url=${encodeURIComponent(j)}&type=audio`;
-      const m = await a.get(l);
-      const n = m.data;
+      const video = searchResult.videos[0];
+      const videoUrl = video.url;
 
-      if (!n.status || !n.mp3) throw new Error("API failed to return download URL (mp3).");
-
-      const fileName = `${n.title}.mp3`.replace(/[\\/:"*?<>|]/g, "");
-      const filePath = c.join(__dirname, fileName);
-
-      // ⬇ Step 3: Download the MP3 file
-      const q = await a.get(n.mp3, {
-        responseType: "arraybuffer",
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity
-      });
-
-      b.writeFileSync(filePath, q.data);
-
-      // ✅ Step 4: Remove searching message
-      if (searchingMsg?.messageID) e.unsendMessage(searchingMsg.messageID);
-
-      const messageBody = `🪶 Now playing "${n.title}" 🎵`;
-
-      // ✅ Step 5: Send song in chat
-      e.setMessageReaction("✅", f.messageID, () => {}, true);
-
-      await e.sendMessage(
-        { attachment: b.createReadStream(filePath), body: messageBody },
-        f.threadID,
-        () => {
-          b.unlinkSync(filePath);
-        },
-        f.messageID
+      const stbotApi = new global.utils.STBotApis();
+      const payload = { url: videoUrl };
+      
+      const response = await axios.post(
+        `${stbotApi.baseURL}/api/download/youtube-audio`,
+        payload,
+        { 
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': stbotApi.xApiKey
+          }
+        }
       );
 
-    } catch (r) {
-      console.error(r);
-      if (searchingMsg?.messageID) e.unsendMessage(searchingMsg.messageID);
-      e.setMessageReaction("❌", f.messageID, () => {}, true);
-      e.sendMessage(`❌ Failed to download song: ${r.message}`, f.threadID, f.messageID);
+      if (response.data.success && response.data.data.videos && response.data.data.videos[0]) {
+        const audioData = response.data.data;
+        const audioUrl = audioData.videos[0];
+        const title = audioData.title;
+        const filename = audioData.filename || "audio.mp3";
+
+        const cachePath = path.join(__dirname, "cache", filename);
+        
+        const audioResponse = await axios.get(audioUrl, {
+          responseType: "arraybuffer"
+        });
+
+        fs.writeFileSync(cachePath, Buffer.from(audioResponse.data));
+
+        await message.unsend(processingMsg.messageID);
+
+        await message.reply({
+          body: `🎶 Now Playing: ${title}\n👤 Requested by: ${userName}\n🎵 Quality: ${audioData.quality}`,
+          attachment: fs.createReadStream(cachePath)
+        });
+
+        fs.unlinkSync(cachePath);
+      } else {
+        await message.unsend(processingMsg.messageID);
+        return message.reply("❌ Failed to download the audio.");
+      }
+
+    } catch (err) {
+      console.error(err);
+      await message.unsend(processingMsg.messageID);
+      return message.reply("⚠️ Error while processing your request: " + err.message);
     }
   }
 };
